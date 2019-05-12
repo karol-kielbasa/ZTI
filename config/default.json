@@ -1,3 +1,4 @@
 {
-    "mongoURI":"mongodb+srv://dev:dev@zti-hzb2v.mongodb.net/test?retryWrites=true"
+    "mongoURI":"mongodb+srv://dev:dev@zti-hzb2v.mongodb.net/test?retryWrites=true",
+    "jwtSecret":"mySecret"
 }
