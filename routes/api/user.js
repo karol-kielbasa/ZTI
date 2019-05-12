@@ -36,19 +36,6 @@ router.post('/register', [
             name: user.name,
             email: user.email
         }).send();
-        // const payload = {
-        //     user: {
-        //         id: user.id
-        //     }
-        // }
-        // jwt.sign(payload, config.get('jwtSecret'), { expiresIn: 3600 }, (err, token) => {
-        //     if(err) {
-        //         console.error(err);
-        //         throw err;
-        //     }
-        //     res.json({token}).send(); 
-        // });
-
     } catch (err) {
         console.error(err.message);
         return res.status(500).send('Server error');
@@ -62,6 +49,12 @@ router.post('/login', [
     check('email').isEmail().withMessage('Email is not valid'),
     check('password').isLength({ min: 6 }).withMessage('Password must be with 6 or more characters')
 ], async (req, res) => {
+    
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ error: errors.array() });
+    }
+
     const { email, password } = req.body;
     try {
         let user = await User.findOne({ email });
