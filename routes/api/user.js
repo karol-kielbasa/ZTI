@@ -71,7 +71,7 @@ router.post('/login', [
                     console.error(err);
                     throw err;
                 }
-                res.json({ token }).send();
+                res.json({ user, token }).send();
             });
         }
     } catch (err) {
