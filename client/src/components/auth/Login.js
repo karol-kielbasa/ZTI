@@ -1,62 +1,112 @@
-import React, { Fragment, useState } from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { login } from '../../actions/auth';
 import PropTypes from 'prop-types'
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
 
-const Login = ({ login, isAuthenticated }) => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: ''
-    });
+const styles = theme => ({
+  main: {
+    width: 'auto',
+    display: 'block', // Fix IE 11 issue.
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+      width: 400,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
+  paper: {
+    marginTop: theme.spacing.unit * 8,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing.unit,
+  },
+  submit: {
+    marginTop: theme.spacing.unit * 3,
+  },
+});
 
-    const { password, email } = formData;
+const Login = ({ login, isAuthenticated, classes }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: ''
+  });
 
-    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value })
+  const { password, email } = formData;
 
-    const onSubmit = e => {
-        e.preventDefault();
-        login({ email, password });
-    }
+  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value })
 
-    if(isAuthenticated){
-        return <Redirect to='/dashboard'/>
-    }
+  const onSubmit = e => {
+    e.preventDefault();
+    login({ email, password });
+  }
 
-    return (
-        <Fragment>
-            <h1 className="large text-primary">Sign In</h1>
-            <p className="lead"><i className="fas fa-user"></i> Sign In</p>
-            <form className="form" onSubmit={e => onSubmit(e)}>
+  if (isAuthenticated) {
+    return <Redirect to='/dashboard' />
+  }
 
-                <div className="form-group">
-                    <input type="email" placeholder="Email Address" name="email" value={email} onChange={e => onChange(e)} />
-                </div>
-                <div className="form-group">
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        name="password"
-                        value={password} onChange={e => onChange(e)}
-                    />
-                </div>
-
-                <input type="submit" className="btn btn-primary" value="Login" />
-            </form>
-            <p className="my-1">
-                Dont have an account? <Link to="/register">Sign Up</Link>
-            </p>
-        </Fragment>
-    )
+  return (
+    <main className={classes.main}>
+      <CssBaseline />
+      <Paper className={classes.paper}>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <form className={classes.form} onSubmit={e => onSubmit(e)}>
+          <FormControl margin="normal" required fullWidth>
+            <InputLabel htmlFor="email">Email Address</InputLabel>
+            <Input id="email" name="email" value={email} onChange={e => onChange(e)} autoComplete="email" autoFocus />
+          </FormControl>
+          <FormControl margin="normal" required fullWidth>
+            <InputLabel htmlFor="password">Password</InputLabel>
+            <Input name="password" type="password" id="password" value={password} onChange={e => onChange(e)} autoComplete="current-password" />
+          </FormControl>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
+            Sign in
+          </Button>
+        </form>
+      </Paper>
+    </main>
+  )
 }
 
 Login.propTypes = {
-    login: PropTypes.func.isRequired,
-    isAuthenticated: PropTypes.bool
+  login: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
+  classes: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated
 })
 
-export default connect(mapStateToProps, { login })(Login);
+export default connect(mapStateToProps, { login })(withStyles(styles)(Login));
+
+
+
+
+
+
+
+
+// export default withStyles(styles)(Login);

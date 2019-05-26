@@ -1,11 +1,47 @@
-import React, { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import PropTypes from 'prop-types'
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
 
-const Register = ({ setAlert, register }) => {
+const styles = theme => ({
+    main: {
+        width: 'auto',
+        display: 'block', // Fix IE 11 issue.
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+        [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+            width: 400,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    paper: {
+        marginTop: theme.spacing.unit * 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing.unit,
+    },
+    submit: {
+        marginTop: theme.spacing.unit * 3,
+    },
+});
+
+
+const Register = ({ setAlert, register, classes }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -23,49 +59,53 @@ const Register = ({ setAlert, register }) => {
             setAlert('Password do not match', 'danger');
         }
         else {
-            register({name, email, password});
+            register({ name, email, password });
         }
     }
 
     return (
-        <Fragment>
-            <h1 className="large text-primary">Sign Up</h1>
-            <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
-            <form className="form" onSubmit={e => onSubmit(e)}>
-                <div className="form-group">
-                    <input type="text" placeholder="Name" name="name" value={name} onChange={e => onChange(e)} />
-                </div>
-                <div className="form-group">
-                    <input type="email" placeholder="Email Address" name="email" value={email} onChange={e => onChange(e)} />
-                </div>
-                <div className="form-group">
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        name="password"
-                        value={password} onChange={e => onChange(e)}
-                    />
-                </div>
-                <div className="form-group">
-                    <input
-                        type="password"
-                        placeholder="Confirm Password"
-                        name="password2"
-                        value={password2} onChange={e => onChange(e)}
-                    />
-                </div>
-                <input type="submit" className="btn btn-primary" value="Register" />
-            </form>
-            <p className="my-1">
-                Already have an account? <Link to="/login">Sign In</Link>
-            </p>
-        </Fragment>
-    );
+        <main className={classes.main}>
+            <CssBaseline />
+            <Paper className={classes.paper}>
+                <Typography component="h1" variant="h5">
+                    Sign Up
+            </Typography>
+                <form className={classes.form} onSubmit={e => onSubmit(e)}>
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="name">Name</InputLabel>
+                        <Input id="name" name="name" value={name} onChange={e => onChange(e)} autoComplete="name" autoFocus />
+                    </FormControl>
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="email">Email Address</InputLabel>
+                        <Input id="email" name="email" value={email} onChange={e => onChange(e)} autoComplete="email" />
+                    </FormControl>
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <Input name="password" type="password" id="password" value={password} onChange={e => onChange(e)} autoComplete="current-password" />
+                    </FormControl>
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="password">Confirm Password</InputLabel>
+                        <Input name="password2" type="password" id="password2" value={password2} onChange={e => onChange(e)} autoComplete="current-password" />
+                    </FormControl>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                    >
+                        Sign Up
+              </Button>
+                </form>
+            </Paper>
+        </main>
+    )
 };
 
 Register.propTypes = {
     setAlert: PropTypes.func.isRequired,
-    register: PropTypes.func.isRequired
+    register: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired
 }
 
-export default connect(null, { setAlert, register })(Register);
+export default connect(null, { setAlert, register })(withStyles(styles)(Register));

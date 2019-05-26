@@ -1,43 +1,55 @@
 import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth'
+import Button from '@material-ui/core/Button';
 
-const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
+const styles = theme => ({
+    root: {
+        display: 'flex',
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1,
+    },
+});
+
+const Navbar = ({ auth: { isAuthenticated, loading }, logout, classes }) => {
     const loggedLinks = (
-        <ul>
-            <li>
-                <a onClick={logout} href='#!'>
-                    <i className='fas fa-sign-out-alt' /> {' '}
-                    <span className='hide-sm'>Logout</span>
-                </a>
-            </li>
-        </ul>
+        <div><Button onClick = {logout}><Link to="/">Logout</Link></Button></div>
     )
     const notLoggedLinks = (
-        <ul>
-            <li><Link to="/login">Sign in</Link></li>
-            <li><Link to="/register">Sign up</Link></li>
-        </ul>
+        <div>
+            <Button><Link to="/login">Sign in</Link></Button>
+            <Button><Link to="/register">Sign up</Link></Button>
+        </div>
     )
     return (
-        <nav className="navbar bg-dark">
-            <h1>
-                <Link to="/"><i className="fas fa-code"></i>ZTI</Link>
-            </h1>
-            <Fragment>{isAuthenticated ? loggedLinks : notLoggedLinks}</Fragment>
-        </nav>
+        <div className={classes.root}>
+        <CssBaseline />
+        <AppBar position="static" className={classes.appBar}>
+            <Toolbar>
+                <Typography variant="h6" color="inherit" noWrap> ZTI </Typography>
+                <div>{isAuthenticated ? loggedLinks : notLoggedLinks}</div>
+            </Toolbar>
+        </AppBar>
+        </div>
     )
 }
 
 Navbar.propTypes = {
     logout: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     auth: state.auth
 });
 
-export default connect(mapStateToProps, { logout })(Navbar)
+export default connect(mapStateToProps, { logout })(withStyles(styles)(Navbar))
