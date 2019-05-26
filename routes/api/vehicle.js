@@ -43,6 +43,9 @@ router.post('/', auth , [
 router.get('/:id', auth , async (req, res) => {
     try {
         vehicle = await Vehicle.findById(req.params.id);
+        if (!vehicle) {
+            return res.status(404).json({ errors: [{ msg: 'Vehicle not found' }] });
+        }
         res.json({
             id: vehicle.id,
             name: vehicle.name,
@@ -57,13 +60,15 @@ router.get('/:id', auth , async (req, res) => {
     }
 });
 
-
 // @route   GET api/vehicles/
 // @desc    Get all vehicle
 // @route   Private
 router.get('/', auth , async (req, res) => {
     try {
         vehicles = await Vehicle.find();
+        if (!vehicles) {
+            return res.status(404).json({ errors: [{ msg: 'Vehicles not found' }] });
+        }
         res.json({
             vehicles
         }).send();
@@ -72,7 +77,5 @@ router.get('/', auth , async (req, res) => {
         return res.status(500).send('Server error');
     }
 });
-
-
 
 module.exports = router;

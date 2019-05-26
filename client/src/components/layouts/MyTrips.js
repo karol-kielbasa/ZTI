@@ -25,7 +25,7 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
 });
 
-function Dashboard(props) {
+function MyTrips(props) {
   const { classes } = props;
 
   return (
@@ -44,14 +44,14 @@ function Dashboard(props) {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-          HELLO
+          MY trips
       </main>
     </div>
   );
 }
 
-Dashboard.propTypes = {
+MyTrips.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Dashboard);
+export default withStyles(styles)(MyTrips);

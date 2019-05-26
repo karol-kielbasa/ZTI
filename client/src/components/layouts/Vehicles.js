@@ -1,9 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import React from 'react'
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Navigator from './Navigator'
+import { withStyles } from '@material-ui/core/styles';
 
 const drawerWidth = 240;
 
@@ -25,11 +24,10 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
 });
 
-function Dashboard(props) {
-  const { classes } = props;
-
-  return (
-    <div className={classes.root}>
+function Vehicles(props) {
+    const { classes } = props;
+    return (
+        <div className={classes.root}>
       <CssBaseline />
       <Drawer
         className={classes.drawer}
@@ -44,14 +42,10 @@ function Dashboard(props) {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-          HELLO
+            Vehicles
       </main>
     </div>
-  );
+    )
 }
 
-Dashboard.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(Dashboard);
+export default withStyles(styles)(Vehicles);

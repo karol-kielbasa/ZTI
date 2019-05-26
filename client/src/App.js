@@ -5,6 +5,8 @@ import Dashboard from './components/layouts/Dashboard'
 import Register from './components/auth/Register'
 import Login from './components/auth/Login'
 import Alert from './components/layouts/Alert'
+import Vehicles from './components/layouts/Vehicles'
+import MyTrips from './components/layouts/MyTrips'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
@@ -25,6 +27,8 @@ const App = () =>
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
             <Route exact path='/dashboard' component={Dashboard} />
+            <Route exact path='/vehicles' component={Vehicles} />
+            <Route exact path='/trips' component={MyTrips} />
           </Switch>
         </section>
       </Fragment>

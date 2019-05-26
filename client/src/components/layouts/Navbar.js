@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,8 +12,12 @@ import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
     root: {
-        display: 'flex',
+        display: 'flex'
     },
+    rightToolbar: {
+        marginLeft: 'auto',
+        marginRight: -12,
+      },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
     },
@@ -21,11 +25,11 @@ const styles = theme => ({
 
 const Navbar = ({ auth: { isAuthenticated, loading }, logout, classes }) => {
     const loggedLinks = (
-        <div><Button onClick = {logout}><Link to="/">Logout</Link></Button></div>
+        <div><Button variant="outlined" onClick = {logout}><Link to="/">Logout</Link></Button></div>
     )
     const notLoggedLinks = (
         <div>
-            <Button><Link to="/login">Sign in</Link></Button>
+            <Button variant="outlined"><Link to="/login">Sign in</Link></Button>
             <Button><Link to="/register">Sign up</Link></Button>
         </div>
     )
@@ -35,7 +39,7 @@ const Navbar = ({ auth: { isAuthenticated, loading }, logout, classes }) => {
         <AppBar position="static" className={classes.appBar}>
             <Toolbar>
                 <Typography variant="h6" color="inherit" noWrap> ZTI </Typography>
-                <div>{isAuthenticated ? loggedLinks : notLoggedLinks}</div>
+                <div className={classes.rightToolbar}>{isAuthenticated ? loggedLinks : notLoggedLinks}</div>
             </Toolbar>
         </AppBar>
         </div>
