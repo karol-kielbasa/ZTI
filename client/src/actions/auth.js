@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from './types'
 import { setAlert } from './alert'
-
-
+import  setToken  from './../utils/TokenUtil'
 
 export const register = ({ name, email, password }) => async dispatch => {
     const config = {
@@ -42,6 +41,7 @@ export const login = ({ email, password }) => async dispatch => {
             type: LOGIN_SUCCESS,
             payload: res.data
         })
+        setToken(res.data.token);
     } catch (err) {
         const errors = err.response.data.error;
         if (errors) {

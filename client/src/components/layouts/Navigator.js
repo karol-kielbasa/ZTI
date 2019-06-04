@@ -9,42 +9,42 @@ import DirectionIcon from '@material-ui/icons/Directions';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const menu = [
-    {
-      id: ' Menu',
-      children: [
-        { id: 'Dashboard', icon: <DashboardIcon />, link: '/dashboard' },
-        { id: 'Availabe vehicles', icon: <TimeToLeaveIcon />, link: '/vehicles' },
-        { id: 'My trips', icon: <DirectionIcon />, link: '/trips' },
-      ],
-    }
-  ]
-  
-export default function Navigator() {
-    return (
-        <div>
-            <List>
-          {menu.map(({ id, children }) => (
-            <React.Fragment key={id}>
-              <ListItem >
-                <ListItemText>
-                  {id}
-                </ListItemText>
-              </ListItem>
-              {children.map(({ id: childId, icon, link }) => (
-                <ListItem button dense key={childId} >
-                    <ListItemIcon>{icon}</ListItemIcon>
-                    <Link to={link}>
-                    <ListItemText >
-                      {childId}
-                    </ListItemText>
-                  </Link>
-                </ListItem>
-              ))}
-            </React.Fragment>
-          ))}
+  {
+    id: ' Menu',
+    children: [
+      { id: 'Dashboard', icon: <DashboardIcon />, link: '/dashboard' },
+      { id: 'Availabe vehicles', icon: <TimeToLeaveIcon />, link: '/vehicles' },
+      { id: 'My trips', icon: <DirectionIcon />, link: '/trips' },
+    ],
+  }
+]
 
-        </List>
-        </div>
-    )
+export default function Navigator() {
+  return (
+    <div>
+      <List>
+        {menu.map(({ id, children }) => (
+          <React.Fragment key={id}>
+            <ListItem >
+              <ListItemText>
+                {id}
+              </ListItemText>
+            </ListItem>
+            {children.map(({ id: childId, icon, link }) => (
+              <Link to={link}>
+                <ListItem button key={childId} >
+                  <ListItemIcon>{icon}</ListItemIcon>
+                  <ListItemText >
+                    {childId}
+                  </ListItemText>
+                </ListItem>
+              </Link>
+            ))}
+          </React.Fragment>
+        ))}
+
+      </List>
+    </div>
+  )
 }
 

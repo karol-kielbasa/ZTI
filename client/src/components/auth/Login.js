@@ -101,12 +101,3 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, { login })(withStyles(styles)(Login));
-
-
-
-
-
-
-
-
-// export default withStyles(styles)(Login);

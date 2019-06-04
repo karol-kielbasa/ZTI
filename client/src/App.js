@@ -7,6 +7,7 @@ import Login from './components/auth/Login'
 import Alert from './components/layouts/Alert'
 import Vehicles from './components/layouts/Vehicles'
 import MyTrips from './components/layouts/MyTrips'
+import PrivateRoute from './components/routing/PrivateRoute'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
@@ -26,9 +27,9 @@ const App = () =>
           <Switch>
             <Route exact path='/register' component={Register} />
             <Route exact path='/login' component={Login} />
-            <Route exact path='/dashboard' component={Dashboard} />
-            <Route exact path='/vehicles' component={Vehicles} />
-            <Route exact path='/trips' component={MyTrips} />
+            <PrivateRoute exact path='/dashboard' component={Dashboard} />
+            <PrivateRoute exact path='/vehicles' component={Vehicles} />
+            <PrivateRoute exact path='/trips' component={MyTrips} />
           </Switch>
         </section>
       </Fragment>

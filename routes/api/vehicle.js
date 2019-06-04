@@ -56,7 +56,7 @@ router.get('/:id', auth , async (req, res) => {
         }).send();
     } catch (err) {
         console.error(err.message);
-        return res.status(500).send('Server error');
+        return res.status(500).json('Server error');
     }
 });
 
@@ -73,8 +73,9 @@ router.get('/', auth , async (req, res) => {
             vehicles
         }).send();
     } catch (err) {
+        console.log(vehicles);
         console.error(err.message);
-        return res.status(500).send('Server error');
+        return res.status(500).json('Server error');
     }
 });
 

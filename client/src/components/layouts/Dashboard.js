@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Navigator from './Navigator'
+import { connect } from 'react-redux';
 
 const drawerWidth = 240;
 
@@ -54,4 +55,4 @@ Dashboard.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Dashboard);
+export default connect(null, {  })(withStyles(styles)(Dashboard));
