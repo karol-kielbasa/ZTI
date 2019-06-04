@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Navigator from './Navigator'
@@ -13,9 +13,10 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+import Modal from '@material-ui/core/Modal';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import MapContainer from './MapContainer'; 
+import MapContainer from './MapContainer';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { getVehicles } from '../../actions/vehicles';
@@ -50,13 +51,27 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   button: {
-    marginTop:8,
-    width:'100%'
+    marginTop: 8,
+    width: '100%'
   },
   toolbar: theme.mixins.toolbar,
+  paper: {
+    margin: 'auto',
+    width: '50%',
+    height: '60%',
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    outline: 'none',
+  },
+  modalText: {
+    padding: theme.spacing.unit * 2,
+  },
+  modalButton: {
+    marginTop: '40%',
+  }
 });
 
-
+const distanceTab = [];
 function TabContainer({ children }) {
   return (
     <Typography component="div">
@@ -67,9 +82,9 @@ function TabContainer({ children }) {
 
 const ListCotainer = ({ items }) => {
   return (
-    <List dense styles={{height:500}}>
+    <List dense styles={{ height: 500 }}>
       {items.map(value => (
-        <ListItem   button>
+        <ListItem button>
           <ListItemAvatar>
             <Avatar src={value.imgUrl} />
           </ListItemAvatar>
@@ -84,20 +99,80 @@ const ListCotainer = ({ items }) => {
 
 function Vehicles({ classes, vehicles, getVehicles }) {
   const [value, setValue] = React.useState(0);
+  const [distanceTabIndex, setDistanceTabIndex] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
-  
+  const [open, setOpen] = React.useState(false);
+  const [location, setLocation] = React.useState({ lat: 0, lng: 0 });
+
+  function getCurent() {
+    const geolocation = navigator.geolocation;
+    const location = new Promise((resolve, reject) => {
+      if (!geolocation) {
+        reject(new Error('Not Supported'));
+      }
+
+      geolocation.getCurrentPosition((position) => {
+        resolve(position);
+      }, () => {
+        reject(new Error('Permission denied'));
+      });
+    });
+
+    return location
+  }
+
+
+  const calcualteDistances = () => {
+    var p = 0.017453292519943295;    // Math.PI / 180
+    var c = Math.cos;
+    vehicles.vehicles.map(vehicle => {
+      var a = 0.5 - c((location.lat - vehicle.lat) * p) / 2 +
+        c(vehicle.lat * p) * c(location.lat * p) *
+        (1 - c((location.lng - vehicle.long) * p)) / 2;
+      let distance = 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+      distanceTab.push({
+        distance: distance,
+        locationLat: location.lat,
+        locationLng: location.lng,
+        vehicleLat: vehicle.lat,
+        vehicleLng: vehicle.long
+      })
+    })
+    distanceTab.sort((a,b) =>  a.distance - b.distance);
+  };
+  function findAnotherOne() {
+    if(distanceTabIndex < distanceTab.length - 1){
+      setDistanceTabIndex(distanceTabIndex+1);
+    } else {
+      setDistanceTabIndex(0);
+    }
+  }
+
+  const handleOpen = () => {
+    setOpen(true);
+    if(distanceTab.length===0){
+      calcualteDistances();
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   useEffect(() => {
     setIsLoading(true);
     getVehicles();
     setIsLoading(false);
-
+    async function location() {
+      const val = await getCurent();
+      setLocation({ lat: val.coords.latitude, lng: val.coords.longitude });
+    }
+    location();
   }, []);
 
 
   function handleChange(event, newValue) {
     setValue(newValue);
   }
-
   function handleChangeIndex(index) {
     setValue(index);
   }
@@ -121,18 +196,34 @@ function Vehicles({ classes, vehicles, getVehicles }) {
             <Tab label="List" />
           </Tabs>
           <SwipeableViews index={value} onChangeIndex={handleChangeIndex}>
-          <TabContainer>
-              {!isLoading && vehicles.vehicles ? <MapContainer items={vehicles.vehicles}/> : <div><CircularProgress/></div>}
+            <TabContainer>
+              {!isLoading && vehicles.vehicles ? <MapContainer items={vehicles.vehicles} /> : <div><CircularProgress /></div>}
             </TabContainer>
             <TabContainer>
-              {!isLoading && vehicles.vehicles ? <ListCotainer items={vehicles.vehicles}/> : <div><CircularProgress/></div>}
+              {!isLoading && vehicles.vehicles ? <ListCotainer items={vehicles.vehicles} /> : <div><CircularProgress /></div>}
             </TabContainer>
           </SwipeableViews>
         </div>
       </Paper>
-      <Button className={classes.button} type="submit" fullWidth variant="contained" color="primary">
-          Find one !
+      <Button className={classes.button} type="submit" fullWidth variant="contained" color="primary" onClick={handleOpen}>
+        Find one !
       </Button>
+      <Modal
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={open}
+        onClose={handleClose}
+      >
+        <div className={classes.paper}>
+          <Typography className={classes.modalText} variant="h6" id="modal-title">
+            The nearest vehicle
+          </Typography>
+          <MapContainer items={vehicles.vehicles} styles={{ width: '50%', height: '40%' }} lineToDraw={distanceTab[distanceTabIndex]} />
+          <Button className={classes.modalButton} type="submit" fullWidth variant="contained" color="primary" onClick={findAnotherOne}>
+            Find another one !
+            </Button>
+        </div>
+      </Modal>
     </div>
   )
 }
@@ -145,4 +236,4 @@ const mapStateToProps = state => ({
   vehicles: state.vehicles,
 })
 
-export default connect(mapStateToProps, {getVehicles} )(withStyles(styles)(Vehicles));
+export default connect(mapStateToProps, { getVehicles })(withStyles(styles)(Vehicles));

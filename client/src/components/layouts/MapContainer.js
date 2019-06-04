@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
-import { connect } from 'react-redux';
+import { Map, GoogleApiWrapper, Marker, InfoWindow,Polyline } from 'google-maps-react';
 
-const mapStyles = {
-  width: '100%',
-  height: '100%',
-};
+
 
 const LoadingContainer = (props) => (
   <div><CircularProgress /></div>
 )
 
-
-
-
 function getCurent() {
   const geolocation = navigator.geolocation;
-
   const location = new Promise((resolve, reject) => {
     if (!geolocation) {
       reject(new Error('Not Supported'));
@@ -33,10 +25,8 @@ function getCurent() {
   return location
 }
 
-
-
 function MapContainer(props) {
-  const { items, } = props;
+  const { items, lineToDraw } = props;
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   const [activeMarker, setActiveMarker] = useState(null);
   const [selectedPlace, setSelectedPlase] = useState(null);
@@ -68,7 +58,7 @@ function MapContainer(props) {
       <Map
         google={props.google}
         zoom={11}
-        style={mapStyles}
+        style={props.styles}
         initialCenter={{ lat: 50.069683, lng: 19.944544 }}
       >
         {items.map((vehicle, index) => (
@@ -100,6 +90,12 @@ function MapContainer(props) {
             Your location
           </small>
         </InfoWindow>
+        {lineToDraw ? <Polyline
+          path={[{lat:lineToDraw.locationLat,lng:lineToDraw.locationLng},
+            {lat:lineToDraw.vehicleLat,lng:lineToDraw.vehicleLng}]}
+          strokeColor="#0000FF"
+          strokeOpacity={0.8}
+          strokeWeight={2} /> : null}
       </Map>
     </div>
   );
