@@ -11,3 +11,6 @@ export const LOGOUT = 'LOGOUT';
 //vehicles
 export const GET_VEHICLES = 'VEHICLES_GET';
 export const VEHICLES_FAIL = 'VEHICLES_FAIL';
+//trips
+export const GET_TRIPS = 'TRIPS_GET';
+export const TRIPS_FAIL = 'TRIPS_FAIL';

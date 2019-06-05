@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator/check')
-const config = require('config');
 const auth = require('../../middleware/auth');
 const Vehicle = require('../../models/Vehicle');
 
@@ -73,8 +72,6 @@ router.get('/', auth , async (req, res) => {
             vehicles
         }).send();
     } catch (err) {
-        console.log(vehicles);
-        console.error(err.message);
         return res.status(500).json('Server error');
     }
 });

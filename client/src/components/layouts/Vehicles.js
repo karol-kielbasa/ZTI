@@ -21,6 +21,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { getVehicles } from '../../actions/vehicles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import axios from 'axios';
 
 const drawerWidth = 250;
 
@@ -56,7 +57,7 @@ const styles = theme => ({
   },
   toolbar: theme.mixins.toolbar,
   paper: {
-    margin: 'auto',
+    margin: '0 auto',
     width: '50%',
     height: '60%',
     backgroundColor: theme.palette.background.paper,
@@ -68,6 +69,11 @@ const styles = theme => ({
   },
   modalButton: {
     marginTop: '40%',
+    width:'50%'
+  },
+  modalButtonTrip: {
+    marginTop: '40%',
+    width:'50%',
   }
 });
 
@@ -97,7 +103,7 @@ const ListCotainer = ({ items }) => {
   )
 }
 
-function Vehicles({ classes, vehicles, getVehicles }) {
+function Vehicles({ classes, vehicles, getVehicles, auth }) {
   const [value, setValue] = React.useState(0);
   const [distanceTabIndex, setDistanceTabIndex] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -135,7 +141,8 @@ function Vehicles({ classes, vehicles, getVehicles }) {
         locationLat: location.lat,
         locationLng: location.lng,
         vehicleLat: vehicle.lat,
-        vehicleLng: vehicle.long
+        vehicleLng: vehicle.long,
+        vehicleId: vehicle._id
       })
     })
     distanceTab.sort((a,b) =>  a.distance - b.distance);
@@ -157,6 +164,7 @@ function Vehicles({ classes, vehicles, getVehicles }) {
 
   const handleClose = () => {
     setOpen(false);
+    setDistanceTabIndex(0);
   };
   useEffect(() => {
     setIsLoading(true);
@@ -176,6 +184,27 @@ function Vehicles({ classes, vehicles, getVehicles }) {
   function handleChangeIndex(index) {
     setValue(index);
   }
+
+  async function activateTrip() {
+    const vehicleId = distanceTab[distanceTabIndex].vehicleId;
+    const userId = auth.user._id
+    const config = {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  }
+    const body = JSON.stringify({ userId, vehicleId });
+    try {
+      console.log(body);
+        const res = await axios.post('/api/trips', body, config);
+        setOpen(false);
+        setDistanceTabIndex(0);
+    } catch (err){
+      console.log("Error while creating trip");
+      console.log(err);
+    }
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -222,6 +251,9 @@ function Vehicles({ classes, vehicles, getVehicles }) {
           <Button className={classes.modalButton} type="submit" fullWidth variant="contained" color="primary" onClick={findAnotherOne}>
             Find another one !
             </Button>
+            <Button className={classes.modalButtonTrip} type="submit" variant="contained" color="secondary" onClick={activateTrip} >
+            Take one !
+            </Button>
         </div>
       </Modal>
     </div>
@@ -230,10 +262,12 @@ function Vehicles({ classes, vehicles, getVehicles }) {
 
 Vehicles.propTypes = {
   vehicles: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
   vehicles: state.vehicles,
+  auth: state.auth
 })
 
 export default connect(mapStateToProps, { getVehicles })(withStyles(styles)(Vehicles));
