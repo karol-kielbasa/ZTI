@@ -94,7 +94,7 @@ const ListCotainer = ({ items }) => {
           <ListItemAvatar>
             <Avatar src={value.imgUrl} />
           </ListItemAvatar>
-          <ListItemText primary={value.name} />
+          <ListItemText primary={`${value.name} | Avarage rate: ${value.rate} (${value.rateCounter})`} />
           <ListItemSecondaryAction>
           </ListItemSecondaryAction>
         </ListItem>

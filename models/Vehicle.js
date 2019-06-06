@@ -16,6 +16,21 @@ const VehicleSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    rate: {
+        type: Number,
+        required: false,
+        default:0
+    },
+    rateSum: {
+        type: Number,
+        required: false,
+        default:0
+    },
+    rateCounter: {
+        type: Number,
+        required: false,
+        default:0
+    },
     name: {
         type: String,
         required: true

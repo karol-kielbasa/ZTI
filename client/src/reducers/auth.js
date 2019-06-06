@@ -23,7 +23,7 @@ export default function (state = initialState, action) {
         case LOGIN_FAIL:
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            return { ...state, ...payload, isAuthenticated: false, loading: false, token: null, user: null };
+            return { ...state, ...payload, isAuthenticated: false, loading: false, token: null, user: null, vehicles:[], trips:[], };
         default:
             return state;
     }

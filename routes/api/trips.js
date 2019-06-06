@@ -38,6 +38,45 @@ router.post('/', auth , [
     }
 });
 
+// @route   POST api/trips/end
+// @desc    Finish trip
+// @route   Private
+router.post('/end', auth , [
+    check('tripId').not().isEmpty().withMessage('Trip id is required'),
+    check('vehicleId').not().isEmpty().withMessage('Vehicle is required'),
+    check('rate').not().isEmpty().withMessage('Rate is required'),
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ error: errors.array() });
+    }
+    console.log(req.body);
+    const { vehicleId, tripId, rate } = req.body;
+    try {
+        vehicle = await Vehicle.findById(vehicleId);
+        if(vehicle.rate){
+            vehicle.rateSum = vehicle.rateSum + parseFloat(rate)
+            vehicle.rateCounter++;
+            vehicle.rate = (vehicle.rateSum)/vehicle.rateCounter;
+        }
+        else{
+            vehicle.rateSum = 0;
+            vehicle.rateCounter = 1;
+            vehicle.rateSum = parseFloat(rate);
+            vehicle.rate = (vehicle.rateSum)/vehicle.rateCounter;
+        }
+        await Vehicle.updateOne({_id:vehicleId},{rateCounter: vehicle.rateCounter,rate:vehicle.rate, rateSum:vehicle.rateSum});
+        trip = await Trip.findById(tripId);
+        await Trip.updateOne({_id:tripId}, {status:'FINISHED'});
+        res.json({
+            message: 'ok',
+        }).send();
+    } catch (err) {
+        console.error(err.message);
+        return res.status(500).json('Server error');
+    }
+});
+
 // @route   GET api/trips/{userId}
 // @desc    Get all trip
 // @route   Private
